@@ -31,6 +31,7 @@ Amplify.configure({
         ],
     },
 });
+
 root.render(
     <React.StrictMode>
         <Router>

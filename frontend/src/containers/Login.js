@@ -1,20 +1,36 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
+import LoaderButton from '../components/LoaderButton';
+import { Auth } from 'aws-amplify';
+
+import { useAppContext } from '../lib/contextLib';
 import './Login.css';
 
 export default function Login() {
+    const { userHasAuthenticated } = useAppContext();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const nav = useNavigate();
 
     function validateForm() {
         return email.length > 0 && password.length > 0;
     }
 
-    function handleSubmit(event) {
+    async function handleSubmit(event) {
         event.preventDefault();
-    }
+        setIsLoading(true);
 
+        try {
+            await Auth.signIn(email, password);
+            userHasAuthenticated(true);
+            nav('/');
+        } catch (e) {
+            alert(e.message);
+            setIsLoading(false);
+        }
+    }
     return (
         <div className="Login">
             <Form onSubmit={handleSubmit}>
@@ -27,9 +43,9 @@ export default function Login() {
                     <Form.Control type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
                 </Form.Group>
                 <div className="d-grid gap-2 mt-2">
-                    <Button block="true" size="lg" type="submit" disabled={!validateForm()}>
+                    <LoaderButton block="true" size="lg" type="submit" isLoading={isLoading} disabled={!validateForm()}>
                         Login
-                    </Button>
+                    </LoaderButton>
                 </div>
             </Form>
         </div>
