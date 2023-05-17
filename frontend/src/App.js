@@ -5,6 +5,7 @@ import Routes from './Routes';
 import Nav from 'react-bootstrap/Nav';
 import { LinkContainer } from 'react-router-bootstrap';
 import { AppContext } from './lib/contextLib';
+import { onError } from './lib/errorLib';
 import { Auth } from 'aws-amplify';
 import './App.css';
 
@@ -22,7 +23,7 @@ function App() {
             userHasAuthenticated(true);
         } catch (e) {
             if (e !== 'No current user') {
-                alert(e);
+                onError(e);
             }
         }
 
