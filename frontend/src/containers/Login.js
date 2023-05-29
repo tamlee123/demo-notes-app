@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import Form from 'react-bootstrap/Form';
 import LoaderButton from '../components/LoaderButton';
 import { useFormFields } from '../lib/hooksLib';
@@ -10,7 +9,6 @@ import { useAppContext } from '../lib/contextLib';
 import './Login.css';
 
 export default function Login() {
-    const nav = useNavigate();
     const { userHasAuthenticated } = useAppContext();
     const [isLoading, setIsLoading] = useState(false);
     const [fields, handleFieldChange] = useFormFields({
@@ -29,7 +27,6 @@ export default function Login() {
         try {
             await Auth.signIn(fields.email, fields.password);
             userHasAuthenticated(true);
-            nav('/');
         } catch (e) {
             onError(e);
             setIsLoading(false);
